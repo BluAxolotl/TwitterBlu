@@ -1,0 +1,335 @@
+p {
+	margin-block-start: 0px;
+	margin-block-end: 0px;
+}
+
+:root {
+	--backdrop: #12171d;
+	--color-2: #22272d;
+	--color-3: #42474d;
+	--color-4: #62676d;
+	--color-5: #92979d;
+	--font-color: #fff;
+	--tweet-button: #25e2cd;
+	--like-button: #E03C28;
+	--rt-button: #8CD612;
+	--follow-button: #0A89FF;
+}
+
+body {
+	background: var(--backdrop);
+	color: var(--font-color);
+	font-family: 'Roboto Mono', monospace;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--color-2);
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--color-5); 
+	border-radius: 5px
+}
+
+::-webkit-scrollbar-corner {
+	background: var(--color-2);
+}
+
+#sidebar {
+	width: 45px;
+	height: 100%;
+	padding-top: 10px;
+	top: 0px;
+	left: 0px;
+	position: fixed;
+	z-index: 10;
+	background: var(--color-2);
+	overflow-x:hidden;
+	overflow-y:auto;
+	transition: 700ms;
+}
+
+#sidebar-buffer {
+	height: 40px;
+}
+
+#sidebar:hover {
+	width: 350px
+}
+
+#sidebar > button {
+	width: 30px;
+	height: 30px;
+	position: relative;
+	background:none;
+	border:none;
+	font-family: 'Roboto Mono', monospace;
+	font-size: 15px;
+	left: 1px;
+	margin-bottom: 15px;
+	fill: var(--color-5);
+	transition: 500ms;
+}
+
+.sidebar-label {
+	position: absolute;
+	float: right;
+	left: 45px;
+	font-family: 'Roboto Mono', monospace;
+	font-size: 16px;
+	top: 8px;
+	color: white;
+	width: 290px;
+}
+
+#sidebar > button:hover {
+	fill: #fff;
+}
+
+#sidebar > button > svg {
+	width: 30px;
+	height: 30px;
+	margin: auto;
+}
+
+#sidebar-settings-container {
+	
+}
+
+#sidebar-settings {
+	width: inherit;
+	height: 40px;
+	background: var(--color-3);
+	bottom: 0px;
+	position: fixed;
+	border:none;
+	font-family: 'Roboto Mono', monospace;
+	font-size: 15px;
+	fill: var(--color-5);
+	overflow-x:hidden;
+}
+
+#sidebar-settings > p {
+	margin-top: 3px;
+}
+
+#sidebar-settings > svg {
+	position: relative;
+	width: 30px;
+	height: 30px;
+	left: 8px;
+	top: 5px;
+	margin: auto;
+}
+
+#container-container {
+	margin-left: 50px;
+	width: calc( 100vw - 80px );
+	height: 100vh;
+}
+
+.tweet-header {
+	height: 20px;
+}
+
+.hide-button {
+	float: right;
+	position: relative;
+	
+}
+
+.timestamp {
+	color: #ffffff7c
+}
+
+.tweet-container {
+	margin: auto;
+	width: 500px;
+	margin-bottom: 20px;
+}
+
+.tweet {
+	border-radius: 5px;
+	padding: 5px;
+	background: var(--color-2)
+}
+
+.tweet-user-icon {
+	width: 35px;
+	height: 35px;
+	border-radius: 50%;
+	float: left;
+}
+
+.media {
+	margin-top: 5px;
+	max-width: 490px;
+	max-height: 490px;
+}
+
+.tweet-username {
+	position: relative;
+	height: min-content;
+	margin-bottom: 14px;
+	top: 5px;
+	left: 10px;
+	font-size: 20px;
+}
+
+.tweet-buttons {
+	padding-left: 0px;
+}
+
+.tweet-button {
+	padding-left: 1px;
+	margin: 2px;
+	background: none;
+	border: none;
+	transition: 100ms;
+}
+
+.tweet-button[not=true] {
+	fill: var(--tweet-button);
+}
+
+.like-button:hover {
+	fill: var(--like-button);
+}
+
+.rt-button:hover {
+	fill: var(--rt-button);
+}
+
+.tweet-button > svg {
+	width: 20px;
+	height: 20px;
+}
+
+.open-button {
+	top: -5px;
+	position: relative;
+}
+
+#screen-container {
+	position: fixed;
+	z-index: 100;
+	top: 0px;
+	left: 0px;
+	background: #0000007c;
+	width: 100%;
+	height: 100%;
+}
+
+#close-screen {
+	padding-left: 1px;
+	margin: 2px;
+	background: none;
+	border: none;
+	position: fixed;
+	top: 5px;
+	left: 5px;
+}
+
+#close-screen > svg {
+	fill: #fff;
+	width: 20px;
+	height: 20px;
+}
+
+.screen {
+	border-radius: 10px;
+	position: relative;
+	z-index: 101;
+	margin: auto;
+	margin-top: 2.5%;
+	background: var(--color-3);
+	width: 90%;
+	height: 90%;
+}
+
+#screen-user {
+	width: 60%;
+	top: 25%;
+	height: 65%;
+	border-radius: 0% 0% 10px 10px;
+}
+
+#screen-user-banner {
+	position: relative;
+	height: 40%;
+	border-radius: 10px 10px 0% 0%;
+	width: 100%;
+	top: -40%;
+	background-image: url('https://pbs.twimg.com/profile_banners/37170886/1645193472');
+	background-size: cover;
+	background-position: center;
+}
+
+#screen-user-icon {
+	position: absolute;
+	border-radius: 50%;
+	border-style: solid;
+	border-width: calc(5px * var(--scale));
+	border-color: var(--color-3);
+	background: var(--color-3);
+	width: 15%;
+	height: auto;
+	top: -7.5%;
+	left: 2.5%;
+}
+
+#screen-user-username {
+	position: relative;
+	width: 58%;
+	left: 20%;
+	top: -40%;
+	font-size: calc(25px * var(--scale));
+}
+
+#screen-user-screen-name {
+	position: relative;
+	left: 20%;
+	top: -40%;
+	font-size: calc(12px * var(--scale));
+	color: #ffffff7c;
+}
+
+#screen-user-desc {
+	position: relative;
+	left: 1%;
+	top: -30%;
+	width: 98%;
+	font-size: calc(8px * var(--scale));
+	color: #ffffff7c;
+}
+
+#screen-user-follow {
+	position: absolute;
+	border: none;
+	border-radius: calc(10px * var(--scale));
+	width: 15%;
+	height: 10%;
+	color: white;
+	background: var(--follow-button);
+	font-family: 'Arial';
+	font-weight: bolder;
+	font-size: calc(12px * var(--scale));
+	top: 5%;
+	left: 80%
+}
+
+.text-button {
+	background:none;
+	border:none;
+	font-family: 'Roboto Mono', monospace;
+	padding: 0px;
+	margin: 0px;
+	font-size: 15px;
+}
