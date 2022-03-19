@@ -1,6 +1,9 @@
 var tweet_container = document.getElementById("tweet-container")
 var init_button = document.getElementById('init-button')
+var reset_button = document.getElementById('reset-button')
 var screen_container = document.getElementById('screen-container')
+var disp_image_container = document.getElementById('disp-image-container')
+var disp_image_elem = document.getElementById('disp-image')
 var close_screen_button = document.getElementById('close-screen')
 var sidebar = document.getElementById('sidebar')
 var sidebar_buffer = document.getElementById('sidebar-buffer')
@@ -8,30 +11,26 @@ var settings_button = document.getElementById('sidebar-settings')
 
 const br = function () { return document.createElement('br') }
 
-const LocalStorage = window.localStorage
-
-var twitter_api_key_input = document.getElementById('twitter_api_key')
-var twitter_api_key_secret_input = document.getElementById('twitter_api_key_secret')
 var twitter_access_token_input = document.getElementById('twitter_access_token')
 var twitter_access_token_secret_input = document.getElementById('twitter_access_token_secret')
 
 var auth = LocalStorage.getItem('auth')
 
 if (auth != null && auth != "[object Object]") {
-	auth = JSON.parse(auth)
-	twitter_api_key_input.value = auth.twitter_api_key
-	twitter_api_key_secret_input.value = auth.twitter_api_key_secret
-	twitter_access_token_input.value = auth.twitter_access_token
-	twitter_access_token_secret_input.value = auth.twitter_access_token_secret
-	
-	document.getElementById('para_twitter_api_key').remove()
-	document.getElementById('para_twitter_api_key_secret').remove()
-	document.getElementById('para_twitter_access_token').remove()
-	document.getElementById('para_twitter_access_token_secret').remove()
-	twitter_api_key_input.style = "display: none;"
-	twitter_api_key_secret_input.style = "display: none;"
-	twitter_access_token_input.style = "display: none;"
-	twitter_access_token_secret_input.style = "display: none;"
+	init_button.onclick = function (e) {
+		socket.emit('init', JSON.parse(auth))
+	}
+} else {
+	init_button.onclick = function (e) {
+		window.location.href = "/sign_in"
+	}
+}
+
+reset_button.onclick = function (e) {
+	LocalStorage.clear()
+	init_button.onclick = function (e) {
+		window.location.href = "/sign_in"
+	}
 }
 
 settings_button.onclick = function (e) {
@@ -64,6 +63,28 @@ hide_screen()
 close_screen_button.onclick = function (e) {
 	hide_screen()
 }
+
+function hide_disp_image() {
+	disp_image_container.style = "display: none;"
+}
+
+disp_image_container.onclick = function (e) {
+	hide_disp_image()
+}
+
+function disp_image(source) {
+	disp_image_elem.src = source
+	hide_screen()
+	disp_image_container.style = ""
+}
+
+setInterval(function () {
+	if (window.innerWidth < window.innerHeight) {
+		disp_image_elem.setAttribute('mode', 'width')
+	} else {
+		disp_image_elem.setAttribute('mode', 'height')
+	}
+}, 10)
 
 function show_screen(screen, info) {
 	if (typeof(info) === "String") {
@@ -176,19 +197,51 @@ function append_tweets(tweets) {
 				var src = tweet.extended_entities.media[0].video_info.variants.filter(i => i.content_type == "video/mp4").sort((a, b) => b.bitrate - a.bitrate)[0].url
 				var media_elem = document.createElement('video')
 				media_elem.controls = true
-			} else if (tweet.extended_entities.media[0].type == "animated_gif") {
+				media_elem.src = src
+				media_elem.classList.add("media")
+				tweet_elem.appendChild(media_elem)
+				var media_container = document.createElement('div')
+	 		} else if (tweet.extended_entities.media[0].type == "animated_gif") {
 				var src = tweet.extended_entities.media[0].video_info.variants.filter(i => i.content_type == "video/mp4").sort((a, b) => b.bitrate - a.bitrate)[0].url
 				var media_elem = document.createElement('video')
 				media_elem.controls = false
 				media_elem.autoplay = true
 				media_elem.loop = true
+				media_elem.src = src
+				media_elem.classList.add("media")
+				tweet_elem.appendChild(media_elem)
 			} else {
-				var src = tweet.extended_entities.media[0].media_url_https
-				var media_elem = document.createElement('img')
+				var media_container = document.createElement('div')
+				let alphabet = ["a", "b", "c", "d"]
+				let medias = tweet.extended_entities.media
+				medias.forEach((media, index) => {
+					var src = media.media_url_https
+					var media_elem = document.createElement('div')
+					if (medias.length != 3) {
+						media_elem.style = `background-image: url(${src});`
+					} else {
+						media_elem.style = `background-image: url(${src}); grid-area: ${alphabet[index]};`
+					}
+					media_elem.classList.add('image-media')
+					media_elem.onclick = function (e) {
+						disp_image(src)
+					}
+					media_container.appendChild(media_elem)
+				})
+				media_container.classList.add('media-container')
+				tweet_elem.appendChild(media_container)
+				switch (medias.length) {
+					case 2:
+						media_container.style = `grid-template-columns: 50% 50%;`
+					break;
+					case 3:
+						media_container.style = `grid-template-columns: 50% 50%; grid-template-columns: 50% 50%; grid-template-areas: "a c" "b c";`
+					break;
+					case 4:
+						media_container.style = `grid-template-columns: 50% 50%; grid-template-columns: 50% 50%;`
+					break;
+				}
 			}
-			media_elem.classList.add("media")
-			media_elem.src = src
-			tweet_elem.appendChild(media_elem)
 		}
 		
 		container.appendChild(tweet_elem)
@@ -235,20 +288,11 @@ function append_tweets(tweets) {
 		}
 		rt_button.innerHTML += retweet_count
 		buttons.push(rt_button)
-		
-		// let rt_button = document.createElement('button')
-		// rt_button.innerHTML = RETWEET_SVG
-		// rt_button.innerHTML += retweet_count
-		// rt_button.style = "color: #ffffff7c;"
-		// rt_button.classList.add('tweet-button', 'rt-button')
-		// rt_button.onclick = function (e) {
-		// 	print("RETWEET'D")
-		// }
-		// buttons.push(rt_button)
 
 		let info_button = document.createElement('button')
 		info_button.innerHTML = INFO_SVG
 		info_button.classList.add('tweet-button', 'info-button')
+		info_button.setAttribute('not', 'true')
 		info_button.onclick = function (e) {
 			window.navigator.clipboard.writeText(JSON.stringify(tweet)).then(() => {
 				print("COPIED TWEET OBJECT")
@@ -279,6 +323,7 @@ function append_tweets(tweets) {
 
 socket.on('init', (tweets, collections) => {
 	init_button.remove()
+	reset_button.remove()
 	clear_tweets()
 	append_tweets(tweets)
 	def_print(collections)
@@ -350,17 +395,6 @@ socket.on('unretweet', (tweet, rt_count) => {
 		socket.emit('retweet', tweet)
 	}
 })
-
-init_button.onclick = function (e) {
-	let obj = {
-	  "twitter_api_key": twitter_api_key_input.value,
-	  "twitter_api_key_secret": twitter_api_key_secret_input.value,
-	  "twitter_access_token": twitter_access_token_input.value,
-	  "twitter_access_token_secret": twitter_access_token_secret_input.value
-	}
-	LocalStorage.setItem('auth', JSON.stringify(obj))
-	socket.emit('init', obj)
-}
 
 setInterval(function () {
 	let elems = Array.from(sidebar.children)
