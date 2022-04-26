@@ -1,4 +1,4 @@
-const print = console.log
+ const print = console.log
 
 const path = require('path')
 var Twitter = require('./twitter/twitter.js')
@@ -106,6 +106,7 @@ io.on('connection', (socket) => {
 	
 	socket.on('like', (tweet) => {
 		let client = clients.get(socket.id)
+		if (client == null) { socket.emit('RE-LOG'); return }
 		client.post('favorites/create', {id: tweet.id_str, tweet_mode: "extended"}, (err, like_tweet, res) => {
 			socket.emit('like', like_tweet, res)
 		})

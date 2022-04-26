@@ -396,6 +396,10 @@ socket.on('unretweet', (tweet, rt_count) => {
 	}
 })
 
+socket.on('RE-LOG', () => {
+	window.location.href = ""
+})
+
 setInterval(function () {
 	let elems = Array.from(sidebar.children)
 	elems.forEach( elem => {
